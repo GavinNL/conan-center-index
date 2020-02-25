@@ -9,8 +9,9 @@ class SpirvtoolsConan(ConanFile):
     topics = ("conan", "sprv", "vulkan", "hlsl")
     url = "https://github.com/conan-io/conan-center-index"
     settings = "os", "compiler", "arch", "build_type"
-
+    exports_sources = ["CMakeLists.txt"]
     license = "Apache-2.0"
+    generators = "cmake"
 
 
     # Shared/static disabled because the orignal cmake creates both?
@@ -30,6 +31,10 @@ class SpirvtoolsConan(ConanFile):
     @property
     def _source_subfolder(self):
         return "source_subfolder"
+
+    @property
+    def _build_subfolder(self):
+        return "build_subfolder"
 
     def source(self):
         tools.get(**self.conan_data["sources"][self.version])
@@ -72,8 +77,7 @@ class SpirvtoolsConan(ConanFile):
         # need to turn this off
         cmake.definitions["SPIRV_WERROR"] = False
 
-        cmake.configure(source_folder=self._source_subfolder)
-
+        cmake.configure(build_folder=self._build_subfolder)
         return cmake
 
     def build(self):

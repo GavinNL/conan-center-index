@@ -47,8 +47,8 @@ int main() {
   opt.SetMessageConsumer(print_msg_to_stderr);
 
   std::vector<uint32_t> spirv;
-  if (!core.Assemble(source, &spirv)) return 1;
-  if (!core.Validate(spirv)) return 1;
+  if (!core.Assemble(source, &spirv)) return 0;
+  if (!core.Validate(spirv)) return 0;
 
   opt.RegisterPass(spvtools::CreateSetSpecConstantDefaultValuePass({{1, "42"}}))
       .RegisterPass(spvtools::CreateFreezeSpecConstantValuePass())

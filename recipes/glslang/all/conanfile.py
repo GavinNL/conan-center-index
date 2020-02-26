@@ -31,29 +31,34 @@ class GlslangConan(ConanFile):
     def _source_subfolder(self):
         return "source_subfolder"
 
+    @property
+    def _build_subfolder(self):
+        return "build_subfolder"
+
     def source(self):
         tools.get(**self.conan_data["sources"][self.version])
         extracted_dir = "glslang-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
 
     def configure(self):
-        if self.settings.os == "Windows":
-            self.options.remove("fPIC")
+        pass
+        #if self.settings.os == "Windows":
+        #    self.options.remove("fPIC")
 
-        if self.options.shared:
-            del self.options.fPIC
+        #if self.options.shared:
+        #    del self.options.fPIC
 
 
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["ENABLE_CTEST"] = False
         cmake.definitions["BUILD_TESTING"] = False
-        cmake.definitions["ENABLE_GLSLANG_BINARIES"] = False
-
+        cmake.definitions["ENABLE_GLSLANG_BINARIES"] = True
         cmake.definitions["ENABLE_HLSL"] = self.options.hlsl
-        cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
+        #cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
 
-        cmake.configure()
+        #cmake.configure()
+        cmake.configure(build_folder=self._build_subfolder)
         #cmake.configure(source_folder=self._source_subfolder)
         return cmake
 

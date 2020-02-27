@@ -16,14 +16,14 @@ class SpirvtoolsConan(ConanFile):
 
     # Shared/static disabled because the orignal cmake creates both?
     # To Do: Perhaps delete the shared library shared==True?
-    #options = {
-    #    "shared": [True, False],
-    #    "fPIC": [True, False]
-    #}
-    #default_options = {
-    #    "shared": False,
-    #    "fPIC": True
-    #}
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False]
+    }
+    default_options = {
+        "shared": True,
+        "fPIC": True
+    }
 
     def requirements(self):
         self.requires.add("spirv-headers/1.5.1.corrected")
@@ -42,12 +42,9 @@ class SpirvtoolsConan(ConanFile):
         os.rename(extracted_dir, self._source_subfolder)
 
     def configure(self):
-        # This is handled by the original cmake file?
-        #if self.settings.os == "Windows":
-        #    self.options.remove("fPIC")
-        #if self.options.shared:
-        #    del self.options.fPIC
-        pass
+        if self.settings.os == 'Windows':
+            del self.options.fPIC
+
 
 
     def _configure_cmake(self):
@@ -103,5 +100,9 @@ class SpirvtoolsConan(ConanFile):
         ## but for some reason it is giving linking errors when tryign to
         ## create the test_package.cpp
         #
+#        if self.options.shared:
+#            self.cpp_info.libs.append("SPIRV-Tools-shared")
+#            self.cpp_info.libs.append("SPIRV-Tools-opt")
+#else:
         self.cpp_info.libs.append("SPIRV-Tools-opt")
         self.cpp_info.libs.append("SPIRV-Tools")

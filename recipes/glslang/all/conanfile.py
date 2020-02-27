@@ -9,7 +9,7 @@ class GlslangConan(ConanFile):
     url = "https://github.com/conan-io/conan-center-index"
     settings = "os", "compiler", "arch", "build_type"
     exports_sources = ["CMakeLists.txt"]
-    license = "Various"
+    license = "BSD"
     generators = "cmake"
 
     options = {
@@ -19,13 +19,13 @@ class GlslangConan(ConanFile):
     }
     default_options = {
         "fPIC": True,
-        "shared": False,
+        "shared": True,
         "hlsl" : True
     }
 
     def requirements(self):
         if self.options.hlsl:
-            self.requires.add("spirv-tools/2019.2")
+            self.requires.add("spirv-tools/2020.1")
 
     @property
     def _source_subfolder(self):
@@ -41,25 +41,19 @@ class GlslangConan(ConanFile):
         os.rename(extracted_dir, self._source_subfolder)
 
     def configure(self):
-        pass
-        #if self.settings.os == "Windows":
-        #    self.options.remove("fPIC")
-
-        #if self.options.shared:
-        #    del self.options.fPIC
-
+        if self.settings.os == "Windows":
+            self.options.remove("fPIC")
 
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["ENABLE_CTEST"] = False
         cmake.definitions["BUILD_TESTING"] = False
         cmake.definitions["ENABLE_GLSLANG_BINARIES"] = True
+        cmake.definitions["ENABLE_OPT"] = True
         cmake.definitions["ENABLE_HLSL"] = self.options.hlsl
-        #cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
 
-        #cmake.configure()
         cmake.configure(build_folder=self._build_subfolder)
-        #cmake.configure(source_folder=self._source_subfolder)
+
         return cmake
 
     def build(self):
@@ -70,6 +64,9 @@ class GlslangConan(ConanFile):
         self.copy(pattern="LICENSE*", dst="licenses", src=self._source_subfolder)
         cmake = self._configure_cmake()
         cmake.install()
+
+        # Error KB-H020, complaining that .pc files are found
+        tools.rmdir(os.path.join(self.package_folder, "lib/cmake"))
 
 
     def package_info(self):

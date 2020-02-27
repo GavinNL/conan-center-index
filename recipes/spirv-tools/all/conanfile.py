@@ -92,6 +92,9 @@ class SpirvtoolsConan(ConanFile):
         # Error KB-H020, complaining that .pc files are found
         tools.rmdir(os.path.join(self.package_folder, "lib/pkgconfig"))
 
+        # Error KB-H019, complaining that .pc files are found
+        tools.rmdir(os.path.join(self.package_folder, "lib/cmake"))
+
 
     def package_info(self):
         ## The original CMakeLists creates an en example called: spirv-tools-cpp-example

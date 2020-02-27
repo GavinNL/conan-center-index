@@ -6,12 +6,13 @@ class PmpConan(ConanFile):
     name = "pmp"
     homepage = "https://github.com/pmp-library/pmp-library/"
     description = "The Polygon Mesh Processing Library http://www.pmp-library.org"
-    topics = ("conan", "pmp", "vulkan")
+    topics = ("conan", "pmp", "geometry")
     url = "https://github.com/conan-io/conan-center-index"
     settings = "os", "compiler", "arch", "build_type"
     exports_sources = ["CMakeLists.txt"]
     generators = "cmake"
-    license = "BSD"
+
+    license = "MIT"
 
     options = {
         "shared": [True, False],
@@ -53,21 +54,8 @@ class PmpConan(ConanFile):
 
     def package(self):
         self.copy(pattern="LICENSE*", dst="licenses", src=self._source_subfolder)
-
         cmake = self._configure_cmake()
         cmake.install()
 
-        # Error KB-H016, complaining that Cmake config files are found
-        #tools.rmdir(os.path.join(self.package_folder, "lib"))
-
     def package_info(self):
-        # Error KB-H019, complaining that the cmake --build . --target install
-        # placed the cmake files in the wrong directory?
-        self.cpp_info.builddirs.append("lib/cmake")
-
-        # When building the static libraries, tools.collect_libs(self) does
-        # not produce the correct link order.
-        self.cpp_info.libs.append("pmp")
-
-        if self.settings.os == "Linux":
-            self.cpp_info.libs.append("pthread")
+        self.cpp_info.libs = ["pmp"]

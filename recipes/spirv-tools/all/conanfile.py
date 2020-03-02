@@ -6,7 +6,7 @@ class SpirvtoolsConan(ConanFile):
     name = "spirv-tools"
     homepage = "https://github.com/KhronosGroup/SPIRV-Tools/"
     description = "SPIRV-Tools "
-    topics = ("conan", "sprv", "vulkan", "hlsl")
+    topics = ("conan", "spirv", "spirv-v", "vulkan", "opengl", "opencl", "hlsl", "khronos")
     url = "https://github.com/conan-io/conan-center-index"
     settings = "os", "compiler", "arch", "build_type"
     exports_sources = ["CMakeLists.txt"]
@@ -48,26 +48,9 @@ class SpirvtoolsConan(ConanFile):
 
 
     def _configure_cmake(self):
-        # Printing out the root-path of where the spirv-headers was installed
-        # this is just for debugging. Will remove later.
-        #
-        # wget https://github.com/KhronosGroup/SPIRV-Tools/archive/v2019.2.tar.gz
-        # tar -xvf v2019.2.tar.gz
-        # cd SPIRV-Tools-2019.2
-        # mkdir build && cd build
-        # cmake .. -DSPIRV-Headers_SOURCE_DIR=THE_PATH_PRINTED_OUT_BY_THE_FOLLOWING_CODE -DSPIRV_WERROR=False
-        # make
-        print("********")
-        print(self.deps_cpp_info["spirv-headers"].rootpath)
-        print("********")
-
         cmake = CMake(self)
 
-        # The orignal CMake header was weird, it asks the user to check out the
-        # spirv-headers tools into their src/external folder instead of using
-        # a find_package( )
-        # Luckily it also allows you to specify where the headers were installed
-        # to.
+        # Required by the project's CMakeLists.txt
         cmake.definitions["SPIRV-Headers_SOURCE_DIR"] = self.deps_cpp_info["spirv-headers"].rootpath
 
         # There are some switch( ) statements that are causing errors
@@ -94,15 +77,13 @@ class SpirvtoolsConan(ConanFile):
 
 
     def package_info(self):
-        ## The original CMakeLists creates an en example called: spirv-tools-cpp-example
-        ## It links to these two libraries.
-        ## The test_package.cpp is a copy of the spirv-tools-cpp-example.cpp file
-        ## but for some reason it is giving linking errors when tryign to
-        ## create the test_package.cpp
+        # The original CMakeLists.txt file builds SPIRV-Tools.a
+        # and SPIRV-Tools-shared.so
+        # linking to the SPIRV-Tools-shared.so gives the following error:
+        # undefined reference to symbol '_ZNK8spvtools10SpirvTools11DisassembleERKSt6vectorIjSaIjEEPSsj'
         #
-#        if self.options.shared:
-#            self.cpp_info.libs.append("SPIRV-Tools-shared")
-#            self.cpp_info.libs.append("SPIRV-Tools-opt")
-#else:
+        # So not sure why the -shared.so object is being built.
+        self.cpp_info.libs.append("SPIRV-Tools-reduce")
         self.cpp_info.libs.append("SPIRV-Tools-opt")
         self.cpp_info.libs.append("SPIRV-Tools")
+        self.cpp_info.libs.append("SPIRV-Tools-shared")

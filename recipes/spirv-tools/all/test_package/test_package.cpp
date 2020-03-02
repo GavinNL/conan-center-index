@@ -28,6 +28,7 @@
 
 int main() {
   const std::string source =
+      "         OpCapability Linkage "
       "         OpCapability Shader "
       "         OpMemoryModel Logical GLSL450 "
       "         OpSource GLSL 450 "
@@ -36,8 +37,8 @@ int main() {
       " %spec = OpSpecConstant %int 0 "
       "%const = OpConstant %int 42";
 
-  spvtools::SpirvTools core(SPV_ENV_VULKAN_1_0);
-  spvtools::Optimizer opt(SPV_ENV_VULKAN_1_0);
+  spvtools::SpirvTools core(SPV_ENV_UNIVERSAL_1_3);
+  spvtools::Optimizer opt(SPV_ENV_UNIVERSAL_1_3);
 
   auto print_msg_to_stderr = [](spv_message_level_t, const char*,
                                 const spv_position_t&, const char* m) {
@@ -47,8 +48,8 @@ int main() {
   opt.SetMessageConsumer(print_msg_to_stderr);
 
   std::vector<uint32_t> spirv;
-  if (!core.Assemble(source, &spirv)) return 0;
-  if (!core.Validate(spirv)) return 0;
+  if (!core.Assemble(source, &spirv)) return 1;
+  if (!core.Validate(spirv)) return 1;
 
   opt.RegisterPass(spvtools::CreateSetSpecConstantDefaultValuePass({{1, "42"}}))
       .RegisterPass(spvtools::CreateFreezeSpecConstantValuePass())
@@ -62,3 +63,4 @@ int main() {
 
   return 0;
 }
+

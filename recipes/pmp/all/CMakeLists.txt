@@ -25,12 +25,12 @@ conan_basic_setup()
 # This list file only compiles the core/algorithm backend of the PMP
 # library.
 ################################################################################
-
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
 file(GLOB SOURCES source_subfolder/src/pmp/*.cpp)
 file(GLOB HEADERS source_subfolder/src/pmp/*.h)
 
 add_library(pmp ${SOURCES} ${HEADERS})
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
+
 
 # This library depends on rply. The original lists file
 # compiles this as a separate library.

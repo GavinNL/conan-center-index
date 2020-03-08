@@ -2,6 +2,7 @@
 #include <vector>
 #include <utility>
 #include <fstream>
+#include <cstring>
 
 std::vector<uint32_t> ReadFile(const std::string &fileName)
 {
@@ -12,7 +13,7 @@ std::vector<uint32_t> ReadFile(const std::string &fileName)
     out.resize(str.size()/4);
     if( str.size() % 4 != 0) out.push_back(0);
 
-    std:memcpy( out.data(), str.data(), str.size());
+    std::memcpy( out.data(), str.data(), str.size());
 	return out;
 }
 
@@ -48,4 +49,6 @@ int main()
 
 	// Compile to GLSL, ready to give to GL driver.
 	std::string source = glsl.compile();
+
+	return 0;
 }

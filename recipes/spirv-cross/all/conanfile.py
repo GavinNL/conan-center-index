@@ -48,9 +48,9 @@ class SpirvcrossConan(ConanFile):
         extracted_dir = "SPIRV-Cross-" + self.version.replace(".", "-")
         os.rename(extracted_dir, self._source_subfolder)
 
-    def configure(self):
-        if self.settings.os == 'Windows':
-            del self.options.fPIC
+#    def configure(self):
+#        if self.settings.os == 'Windows':
+#            del self.options.fPIC
 
     def _configure_cmake(self):
         cmake = CMake(self)

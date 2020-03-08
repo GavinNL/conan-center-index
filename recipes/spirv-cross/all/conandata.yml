@@ -1,0 +1,4 @@
+sources:
+  "2020.02.26":
+    sha256: 74303f619a61b9668976a64c77f5dbd024ba45fedaaf36e0c2569532eb7adb7d
+    url: https://github.com/KhronosGroup/SPIRV-Cross/archive/2020-02-26.tar.gz

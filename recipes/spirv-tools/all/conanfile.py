@@ -9,6 +9,7 @@ class SpirvtoolsConan(ConanFile):
     description = "Create and optimize SPIRV shaders"
     topics = ("conan", "spirv", "spirv-v", "vulkan", "opengl", "opencl", "hlsl", "khronos")
     url = "https://github.com/conan-io/conan-center-index"
+    short_paths = True
     settings = "os", "compiler", "arch", "build_type"
     exports_sources = ["CMakeLists.txt"]
     license = "Apache-2.0"

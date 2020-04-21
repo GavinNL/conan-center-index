@@ -53,7 +53,7 @@ class SpirvtoolsConan(ConanFile):
         cmake = CMake(self)
 
         if self.options.shared and self.settings.compiler == "Visual Studio":
-            self._cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = True
+            cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = True
 
         # Required by the project's CMakeLists.txt
         cmake.definitions["SPIRV-Headers_SOURCE_DIR"] = self.deps_cpp_info["spirv-headers"].rootpath
